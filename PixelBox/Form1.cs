@@ -22,6 +22,7 @@ namespace PixelBox
         public Form1()
         {
             InitializeComponent();
+            UploadBtn.Enabled = false;
         }
 
         private void DelImgBtn_Click(object sender, EventArgs e)
@@ -131,9 +132,9 @@ namespace PixelBox
             p.WaitForExit();
         }
 
-        private void DelayTbox_TextChanged(object sender, EventArgs e)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (comboBox1.SelectedIndex != -1) UploadBtn.Enabled = true;
         }
     }
 }
