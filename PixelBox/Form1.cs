@@ -27,9 +27,16 @@ namespace PixelBox
 
         private void DelImgBtn_Click(object sender, EventArgs e)
         {
-            listBox1.Items.Remove(listBox1.SelectedItem);
-            imgList.Remove(imgList[listBox1.SelectedIndex]);
-            imgCount -= 1;
+            int idx = listBox1.SelectedIndex;
+            object ob = listBox1.SelectedItem;
+            if (!(idx == -1))
+            {
+                listBox1.Items.Remove(ob);
+                imgList.Remove(imgList[idx]);
+
+                imgCount -= 1;
+                if (imgCount == 0) UploadBtn.Enabled = false;
+            }
         }
 
         private void UpBtn_Click(object sender, EventArgs e)
@@ -79,6 +86,7 @@ namespace PixelBox
                     listBox1.Items.Add(Path.GetFileName(openFile.FileName));
                     imgList.Add(openFile.FileName);
 
+                    if (comboBox1.SelectedIndex != -1) UploadBtn.Enabled = true;
                     imgCount += 1;
                 }
             }
@@ -134,7 +142,7 @@ namespace PixelBox
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedIndex != -1) UploadBtn.Enabled = true;
+            if (comboBox1.SelectedIndex != -1 && listBox1.Items.Count != 0) UploadBtn.Enabled = true;
         }
     }
 }
