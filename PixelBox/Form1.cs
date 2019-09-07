@@ -83,8 +83,33 @@ namespace PixelBox
                 openFile.ShowDialog();
                 if (openFile.FileName.Length > 0)
                 {
-                    listBox1.Items.Add(Path.GetFileName(openFile.FileName));
-                    imgList.Add(openFile.FileName);
+                    Image img = Image.FromFile(openFile.FileName);
+
+                    if (!(img.Height == 32 && img.Width == 32))
+                    {
+                        if (MessageBox.Show("선택한 이미지는 32x32(px) 크기가 아닙니다.\n이미지의 크기를 조정하시겠습니까?", "크기가 맞지 않는 이미지", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            int number;
+                            using (TextReader reader = File.OpenText(".\\resized\\resizedNumber.txt"))
+                            {
+                                number = int.Parse(reader.ReadLine()) + 1;
+
+                                Bitmap tmp = new Bitmap(img, new Size(32, 32));
+                                tmp.Save(".\\resized\\resized_" + number.ToString() + ".png", System.Drawing.Imaging.ImageFormat.Png);
+                                listBox1.Items.Add(Path.GetFileName(openFile.FileName));
+                                imgList.Add(Application.StartupPath + ".\\resized\\resized_" + number.ToString() + ".png");                               
+                            }
+                            StreamWriter sw = new StreamWriter(".\\resized\\resizedNumber.txt", false);
+                            sw.WriteLine(number.ToString());
+                            sw.Close();
+                        }
+                        else return;
+                    }
+                    else
+                    {
+                        listBox1.Items.Add(Path.GetFileName(openFile.FileName));
+                        imgList.Add(openFile.FileName);
+                    }
 
                     if (comboBox1.SelectedIndex != -1) UploadBtn.Enabled = true;
                     imgCount += 1;
@@ -128,6 +153,10 @@ namespace PixelBox
 
             if(File.Exists(".\\rgbmatrix\\data.h")) File.Delete(".\\rgbmatrix\\data.h");
             File.Move(".\\data.h", ".\\rgbmatrix\\data.h");
+
+            StreamWriter sw = new StreamWriter(".\\rgbmatrix\\delay.h", false);
+            sw.WriteLine("const int delayVal = "+textBox1.Text+";          ");
+            sw.Close();
 
             arduinoUpload.CreateNoWindow = false;
             arduinoUpload.UseShellExecute = false;
