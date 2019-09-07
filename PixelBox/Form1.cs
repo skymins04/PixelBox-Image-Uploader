@@ -165,7 +165,7 @@ namespace PixelBox
 
             // 지연시간 반영
             StreamWriter sw = new StreamWriter(".\\rgbmatrix\\delay.h", false);
-            sw.WriteLine("const int delayVal = "+textBox1.Text+";          ");
+            sw.WriteLine("const int delayVal = "+numericUpDown1.Value.ToString()+";          ");
             sw.Close();
 
             // 아두이노 업로드 실행
@@ -183,6 +183,11 @@ namespace PixelBox
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex != -1 && listBox1.Items.Count != 0) UploadBtn.Enabled = true;
+        }
+
+        private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+
         }
     }
 }
