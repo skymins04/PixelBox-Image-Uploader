@@ -184,10 +184,5 @@ namespace PixelBox
         {
             if (comboBox1.SelectedIndex != -1 && listBox1.Items.Count != 0) UploadBtn.Enabled = true;
         }
-
-        private void toolTip1_Popup(object sender, PopupEventArgs e)
-        {
-
-        }
     }
 }
