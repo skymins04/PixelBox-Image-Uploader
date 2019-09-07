@@ -77,14 +77,17 @@ namespace PixelBox
         {
             if(imgCount < 6)
             {
+                //다이얼로그 호출
                 OpenFileDialog openFile = new OpenFileDialog();
                 openFile.DefaultExt = "png";
                 openFile.Filter = "PNG 이미지(*.png; *.PNG)|*.png;*.PNG";
                 openFile.ShowDialog();
+
                 if (openFile.FileName.Length > 0)
                 {
                     Image img = Image.FromFile(openFile.FileName);
 
+                    // 32x32px 검사
                     if (!(img.Height == 32 && img.Width == 32))
                     {
                         if (MessageBox.Show("선택한 이미지는 32x32(px) 크기가 아닙니다.\n이미지의 크기를 조정하시겠습니까?", "크기가 맞지 않는 이미지", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -92,13 +95,16 @@ namespace PixelBox
                             int number;
                             using (TextReader reader = File.OpenText(".\\resized\\resizedNumber.txt"))
                             {
+                                // 파일 번호 가져오기
                                 number = int.Parse(reader.ReadLine()) + 1;
 
+                                // 이미지 리사이즈
                                 Bitmap tmp = new Bitmap(img, new Size(32, 32));
                                 tmp.Save(".\\resized\\resized_" + number.ToString() + ".png", System.Drawing.Imaging.ImageFormat.Png);
                                 listBox1.Items.Add(Path.GetFileName(openFile.FileName));
                                 imgList.Add(Application.StartupPath + ".\\resized\\resized_" + number.ToString() + ".png");                               
                             }
+                            // 다음 파일 번호 반영
                             StreamWriter sw = new StreamWriter(".\\resized\\resizedNumber.txt", false);
                             sw.WriteLine(number.ToString());
                             sw.Close();
@@ -126,12 +132,14 @@ namespace PixelBox
         {
             comboBox1.Items.Clear();
 
+            // COM 포트 리스트 반영
             string[] comlist = System.IO.Ports.SerialPort.GetPortNames();
             if (comlist.Length > 0) comboBox1.Items.AddRange(comlist);
         }
 
         private void UploadBtn_Click(object sender, EventArgs e)
         {
+            // png2ino 스크립트 실행
             ProcessStartInfo png2ino = new ProcessStartInfo();
             ProcessStartInfo arduinoUpload = new ProcessStartInfo();
             Process p = new Process();
@@ -151,13 +159,16 @@ namespace PixelBox
             p.Start();
             p.WaitForExit();
 
+            // 메트릭스 데이터 헤더 파일 이동
             if(File.Exists(".\\rgbmatrix\\data.h")) File.Delete(".\\rgbmatrix\\data.h");
             File.Move(".\\data.h", ".\\rgbmatrix\\data.h");
 
+            // 지연시간 반영
             StreamWriter sw = new StreamWriter(".\\rgbmatrix\\delay.h", false);
             sw.WriteLine("const int delayVal = "+textBox1.Text+";          ");
             sw.Close();
 
+            // 아두이노 업로드 실행
             arduinoUpload.CreateNoWindow = false;
             arduinoUpload.UseShellExecute = false;
             arduinoUpload.FileName = ".\\arduino-1.8.9\\arduino_debug.exe";
