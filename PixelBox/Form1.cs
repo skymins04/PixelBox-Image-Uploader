@@ -118,7 +118,7 @@ namespace PixelBox
             p.Start();
             p.WaitForExit();
 
-            File.Delete(".\\rgbmatrix\\data.h");
+            if(File.Exists(".\\rgbmatrix\\data.h")) File.Delete(".\\rgbmatrix\\data.h");
             File.Move(".\\data.h", ".\\rgbmatrix\\data.h");
 
             arduinoUpload.CreateNoWindow = false;
